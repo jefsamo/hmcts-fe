@@ -7,7 +7,7 @@ It allows users to create tasks and view the details of the newly created task.
 - **Build tool:** Vite
 - **UI library:** Mantine (`@mantine/core`, `@mantine/dates`)
 - **HTTP:** native `fetch` API
-- **Backend:** ASP.NET Core Web API [here]([https://www.metacareers.com/jobs](https://github.com/jefsamo/hmcts-backend))
+- **Backend:** ASP.NET Core Web API [here]([https://www.metacareers.com/jobs](https://github.com/jefsamo/hmcts-backend)
 
 ---
 
