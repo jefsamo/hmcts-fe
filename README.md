@@ -1,4 +1,4 @@
-# Task Manager Frontend
+# HMCTS Take Home Task Manager Frontend
 
 This is the frontend for the Task Manager application.  
 It allows users to create tasks and view the details of the newly created task.
