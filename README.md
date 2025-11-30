@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # Task Manager Frontend
+=======
+# HMCTS Take Home Task Manager Frontend
+>>>>>>> 28f7377280ec98921a89b10c78bccb28d68dae4c
 
 This is the frontend for the Task Manager application.  
 It allows users to create tasks and view the details of the newly created task.
@@ -7,7 +11,11 @@ It allows users to create tasks and view the details of the newly created task.
 - **Build tool:** Vite
 - **UI library:** Mantine (`@mantine/core`, `@mantine/dates`)
 - **HTTP:** native `fetch` API
+<<<<<<< HEAD
 - **Backend:** ASP.NET Core Web API (separate project)
+=======
+- **Backend:** ASP.NET Core Web API [here](https://www.metacareers.com/jobs](https://github.com/jefsamo/hmcts-backend)
+>>>>>>> 28f7377280ec98921a89b10c78bccb28d68dae4c
 
 ---
 
