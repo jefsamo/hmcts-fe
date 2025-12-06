@@ -19,3 +19,17 @@ export async function createTask(payload: CreateTaskPayload): Promise<Task> {
 
   return response.json();
 }
+
+export async function getTasks(): Promise<Task[]> {
+  const response = await fetch(`${BASE_URL}/api/v1/tasks`);
+
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({}));
+    const message =
+      (data && (data.error || data.title || data.detail)) ??
+      `Request failed with status ${response.status}`;
+    throw new Error(message);
+  }
+
+  return response.json();
+}

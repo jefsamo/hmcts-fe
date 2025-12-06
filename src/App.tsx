@@ -1,12 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Button,
   Card,
+  Center,
   Group,
+  Loader,
   Notification,
   Select,
   Stack,
+  Table,
   Text,
   Textarea,
   TextInput,
@@ -15,14 +18,16 @@ import {
 import { DateTimePicker } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import dayjs from "dayjs";
-import { createTask } from "./api";
+import { createTask, getTasks } from "./api";
 import type { Task } from "./types";
 
 function App() {
   const [createdTask, setCreatedTask] = useState<Task | null>(null);
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [loadingTasks, setLoadingTasks] = useState(false);
 
   const form = useForm({
     initialValues: {
@@ -50,14 +55,15 @@ function App() {
         title: values.title.trim(),
         description: values.description.trim() || null,
         status: values.status,
-        dueDateTime: "2025-11-30T10:00:00Z",
+        dueDateTime: values.dueDateTime,
       };
+      console.log(payload);
 
       const task = await createTask(payload);
-      console.log(payload);
       setCreatedTask(task);
       setSuccessMessage("Task created successfully!");
       form.reset();
+      await loadTasks();
     } catch (err: any) {
       setErrorMessage(err.message ?? "Something went wrong");
     } finally {
@@ -65,12 +71,29 @@ function App() {
     }
   });
 
+  const loadTasks = async () => {
+    try {
+      setLoadingTasks(true);
+      const all = await getTasks();
+      setTasks(all);
+    } catch (err: any) {
+      setErrorMessage(err.message ?? "Failed to load tasks");
+    } finally {
+      setLoadingTasks(false);
+    }
+  };
+
+  useEffect(() => {
+    loadTasks();
+  }, []);
+
   return (
-    <Box p="md" maw={600} mx="auto">
+    <Box p="md" maw={800} mx="auto">
       <Title order={2} mb="md">
         Create a New Task
       </Title>
 
+      {/* existing form */}
       <form onSubmit={handleSubmit}>
         <Stack>
           {errorMessage && (
@@ -114,9 +137,7 @@ function App() {
             label="Due date & time"
             withAsterisk
             value={form.values.dueDateTime}
-            onChange={(value) =>
-              form.setFieldValue("dueDateTime", value!.toString())
-            }
+            onChange={(value) => form.setFieldValue("dueDateTime", value)}
             placeholder="Pick date and time"
           />
 
@@ -131,7 +152,7 @@ function App() {
       {createdTask && (
         <Card mt="xl" shadow="sm" radius="md" withBorder>
           <Text fw={500} mb="xs">
-            Task created:
+            Last created task:
           </Text>
           <Text>
             <strong>Title:</strong> {createdTask.title}
@@ -152,6 +173,43 @@ function App() {
             ID: {createdTask.id}
           </Text>
         </Card>
+      )}
+
+      <Title order={3} mt="xl" mb="sm">
+        All Tasks
+      </Title>
+
+      {loadingTasks ? (
+        <Center>
+          <Loader />
+        </Center>
+      ) : tasks.length === 0 ? (
+        <Text size="sm" c="dimmed">
+          No tasks created yet.
+        </Text>
+      ) : (
+        <Table striped highlightOnHover withTableBorder mt="sm">
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>Title</Table.Th>
+              <Table.Th>Status</Table.Th>
+              <Table.Th>Due</Table.Th>
+              <Table.Th>Description</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>
+            {tasks.map((task) => (
+              <Table.Tr key={task.id}>
+                <Table.Td>{task.title}</Table.Td>
+                <Table.Td>{task.status}</Table.Td>
+                <Table.Td>
+                  {dayjs(task.dueDateTime).format("YYYY-MM-DD HH:mm")}
+                </Table.Td>
+                <Table.Td>{task.description ?? "-"}</Table.Td>
+              </Table.Tr>
+            ))}
+          </Table.Tbody>
+        </Table>
       )}
     </Box>
   );

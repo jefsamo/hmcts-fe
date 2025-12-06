@@ -10,5 +10,5 @@ export interface CreateTaskPayload {
   title: string;
   description?: string | null;
   status: string;
-  dueDateTime: string;
+  dueDateTime: string | null;
 }
